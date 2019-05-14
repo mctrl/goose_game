@@ -34,7 +34,7 @@ class GooseGame {
         this.message = `${name} rolls ${moves.join(', ')}. ${name} moves from ${player.currentSpace} to `;
         if (player) {
             this.checkScenarios(player, moves);
-            this.checkOccupancy(player);
+            this.moveOtherPlayers(player);
             console.log(this.message);
             return this.message;
         } else {
@@ -47,20 +47,21 @@ class GooseGame {
     }
 
     checkScenarios(player: Player, moves: Array<number>) {
-        player.previousSpace = player.currentSpace;
-        const name = player.name;
-        const prev = player.previousSpace;
+        const prev = player.currentSpace;
         const diceSum = moves.reduce((acc, item) => acc + item, 0);
         const currentSpace = player.currentSpace + diceSum;
         switch (true) {
             case (currentSpace === this.bridgeSpace):                
                 this.message += `The Bridge. ${player.name} jumps to 12`;
+                player.previousSpace = prev;
                 player.currentSpace = 12;
                 break;
             case (this.gooseSpace.includes(currentSpace)):
                 this.message += `${currentSpace}, the Goose. ${player.name} moves again and goes to `
                 player.currentSpace = currentSpace;
+                player.previousSpace = prev;
                 this.checkScenarios(player, moves);
+                this.moveOtherPlayers(player);
             break;
             case (currentSpace > this.lastSpace):
                 const rollback = this.lastSpace - (currentSpace - this.lastSpace));
@@ -69,23 +70,29 @@ class GooseGame {
             break;
             case (currentSpace === this.lastSpace):
                 player.currentSpace = currentSpace;
+                player.previousSpace = prev;
                 this.message += `${currentSpace}. ${player.name} Wins!!!`
             break;
             default:
                 this.message += `${currentSpace}`;
                 player.currentSpace = currentSpace;
+                player.previousSpace = prev;
                 break;
         }
         
     }
 
-    checkOccupancy(player: Player):void {
+    moveOtherPlayers(player: Player):void {
         const curr = player.currentSpace;
         const name = player.name
-        const occupant = this.players.filter(p => (p.currentSpace === curr && p.name !== name))[0]
-        if (occupant) {
-            this.message += `. On ${curr} there is ${occupant.name}, who returns to ${occupant.previousSpace}`
-            occupant.currentSpace = occupant.previousSpace;
+        const occupants = this.players.filter(p => (p.currentSpace === curr && p.name !== name))
+        if (occupants.length > 0) {
+            occupants.forEach(p => {
+                this.message += `. On ${curr} there is ${p.name}, who returns to ${p.previousSpace}`
+                p.currentSpace = p.previousSpace;
+                this.moveOtherPlayers(p);
+            })
+            
         }
     }
 
