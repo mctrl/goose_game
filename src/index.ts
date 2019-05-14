@@ -10,14 +10,16 @@ class GooseGame {
         this.help();
     };
 
-    addPlayer(name: string): void{
+    addPlayer(name: string): string{
         //const player = new Player(name);
         const existingName: boolean = this.players.filter(p => p.name === name).length >= 1;
         if (existingName) {
             console.log(`${name}: already existing player`)
+            return `${name}: already existing player`;
         } else {
             this.players.push(new Player(name))
             console.log(`players: ${this.getPlayers()}`)
+            return `players: ${this.getPlayers()}`;
         }
         
     }
