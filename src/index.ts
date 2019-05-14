@@ -25,7 +25,7 @@ class GooseGame {
         return this.players.map(p => p.name).join(', ');
     }
 
-    move(name: string, ...moves:Array<number>): void {
+    move(name: string, ...moves:Array<number>): string {
         //ToDo: add error handling
         if (moves.length === 0) {
             moves = this.randomDiceRoll();
@@ -34,9 +34,12 @@ class GooseGame {
         this.message = `${name} rolls ${moves.join(', ')}. ${name} moves from ${player.currentSpace} to `;
         if (player) {
             this.checkScenarios(player, moves);
+            this.checkOccupancy(player);
             console.log(this.message);
+            return this.message;
         } else {
             console.log(`invalid name. Try: ${this.getPlayers()}`)
+            return this.message;
         }
     }
     randomDiceRoll():Array<number> {
@@ -74,6 +77,16 @@ class GooseGame {
                 break;
         }
         
+    }
+
+    checkOccupancy(player: Player):void {
+        const curr = player.currentSpace;
+        const name = player.name
+        const occupant = this.players.filter(p => (p.currentSpace === curr && p.name !== name))[0]
+        if (occupant) {
+            this.message += `. On ${curr} there is ${occupant.name}, who returns to ${occupant.previousSpace}`
+            occupant.currentSpace = occupant.previousSpace;
+        }
     }
 
     help() {
