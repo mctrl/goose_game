@@ -14,11 +14,9 @@ class GooseGame {
         //const player = new Player(name);
         const existingName: boolean = this.players.filter(p => p.name === name).length >= 1;
         if (existingName) {
-            console.log(`${name}: already existing player`)
             return `${name}: already existing player`;
         } else {
             this.players.push(new Player(name))
-            console.log(`players: ${this.getPlayers()}`)
             return `players: ${this.getPlayers()}`;
         }
         
@@ -38,18 +36,15 @@ class GooseGame {
             this.message = `${name} rolls ${moves.join(', ')}. ${name} moves from ${player.currentSpace} to `;
             this.checkScenarios(player, moves);
             this.moveOtherPlayers(player);
-            console.log(this.message);
             return this.message;
         } 
 
         if (player && player.hasFinished) {
-            console.log(`cannot move ${player.name}! ${player.name} already finished!`)
-            return this.message += `cannot move ${player.name}! ${player.name} already finished!`;
+            return this.message = `cannot move ${player.name}! ${player.name} already finished!`;
         }
 
-        console.log(`invalid name. Try: ${this.getPlayers()}`)
-        return this.message;
-        
+        return this.message = `invalid name. Try: ${this.getPlayers()}`;
+
     }
     randomDiceRoll():Array<number> {
         return [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1 ]
