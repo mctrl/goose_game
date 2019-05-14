@@ -53,13 +53,13 @@ class GooseGame {
         switch (true) {
             case (currentSpace === this.bridgeSpace):                
                 this.message += `The Bridge. ${player.name} jumps to 12`;
-                player.previousSpace = prev;
+                player.previousSpaces.unshift(prev);
                 player.currentSpace = 12;
                 break;
             case (this.gooseSpace.includes(currentSpace)):
                 this.message += `${currentSpace}, the Goose. ${player.name} moves again and goes to `
                 player.currentSpace = currentSpace;
-                player.previousSpace = prev;
+                player.previousSpaces.unshift(prev);
                 this.checkScenarios(player, moves);
                 this.moveOtherPlayers(player);
             break;
@@ -70,30 +70,30 @@ class GooseGame {
             break;
             case (currentSpace === this.lastSpace):
                 player.currentSpace = currentSpace;
-                player.previousSpace = prev;
+                player.previousSpaces.unshift(prev);
                 this.message += `${currentSpace}. ${player.name} Wins!!!`
             break;
             default:
                 this.message += `${currentSpace}`;
                 player.currentSpace = currentSpace;
-                player.previousSpace = prev;
+                player.previousSpaces.unshift(prev);
                 break;
         }
         
     }
 
     moveOtherPlayers(player: Player):void {
-        const curr = player.currentSpace;
-        const name = player.name
-        const occupants = this.players.filter(p => (p.currentSpace === curr && p.name !== name))
-        if (occupants.length > 0) {
-            occupants.forEach(p => {
-                this.message += `. On ${curr} there is ${p.name}, who returns to ${p.previousSpace}`
-                p.currentSpace = p.previousSpace;
-                this.moveOtherPlayers(p);
-            })
-            
-        }
+        if (player.currentSpace !== this.lastSpace && player.currentSpace !== 0) {
+            const curr = player.currentSpace;
+            const name = player.name
+            const occupant = this.players.filter(p => (p.currentSpace === curr && p.name !== name))[0]
+            if (occupant) {
+                occupant.currentSpace = occupant.previousSpaces[0];
+                occupant.previousSpaces.shift();
+                this.message += `. On ${curr} there is ${occupant.name}, who returns to ${occupant.currentSpace}`
+                this.moveOtherPlayers(occupant);
+            }
+        } 
     }
 
     help() {
