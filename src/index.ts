@@ -31,16 +31,23 @@ class GooseGame {
             moves = this.randomDiceRoll();
         } 
         let player = this.players.filter(p => p.name === name)[0]
-        this.message = `${name} rolls ${moves.join(', ')}. ${name} moves from ${player.currentSpace} to `;
-        if (player) {
+        
+        if (player && !player.hasFinished) {
+            this.message = `${name} rolls ${moves.join(', ')}. ${name} moves from ${player.currentSpace} to `;
             this.checkScenarios(player, moves);
             this.moveOtherPlayers(player);
             console.log(this.message);
             return this.message;
-        } else {
-            console.log(`invalid name. Try: ${this.getPlayers()}`)
-            return this.message;
+        } 
+
+        if (player && player.hasFinished) {
+            console.log(`cannot move ${player.name}! ${player.name} already finished!`)
+            return this.message += `cannot move ${player.name}! ${player.name} already finished!`;
         }
+
+        console.log(`invalid name. Try: ${this.getPlayers()}`)
+        return this.message;
+        
     }
     randomDiceRoll():Array<number> {
         return [Math.floor(Math.random() * 6) + 1, Math.floor(Math.random() * 6) + 1 ]
@@ -72,6 +79,7 @@ class GooseGame {
                 player.currentSpace = currentSpace;
                 player.previousSpaces.unshift(prev);
                 this.message += `${currentSpace}. ${player.name} Wins!!!`
+                player.hasFinished = true;
             break;
             default:
                 this.message += `${currentSpace}`;
