@@ -107,7 +107,7 @@ class GooseGame {
     help() {
         console.group('list of all available methods');
         console.log('game.addPlayer(playerName)')
-        console.log('game.move(player, [dice1, dice2])')
+        console.log('game.move(player, dice1, dice2)')
         console.groupEnd('list of all available methods');
     }
 
