@@ -70,6 +70,7 @@ class GooseGame {
             case (currentSpace > this.lastSpace):
                 const rollback = this.lastSpace - (currentSpace - this.lastSpace));
                 this.message += `${this.lastSpace}. ${player.name} bounces! ${player.name} returns to ${rollback}`
+                if (prev < rollback) player.previousSpaces.unshift(prev);
                 player.currentSpace = rollback;
             break;
             case (currentSpace === this.lastSpace):
