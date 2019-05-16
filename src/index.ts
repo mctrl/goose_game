@@ -1,5 +1,5 @@
 import Player from './Player';
-class GooseGame {
+export class GooseGame {
     private players: Array<Player> = [];
     private message: string = "";
     
@@ -11,7 +11,6 @@ class GooseGame {
     };
 
     addPlayer(name: string): string{
-        //const player = new Player(name);
         const existingName: boolean = this.players.filter(p => p.name === name).length >= 1;
         if (existingName) {
             return `${name}: already existing player`;
@@ -68,7 +67,7 @@ class GooseGame {
                 this.moveOtherPlayers(player);
             break;
             case (currentSpace > this.lastSpace):
-                const rollback = this.lastSpace - (currentSpace - this.lastSpace));
+                const rollback = this.lastSpace - (currentSpace - this.lastSpace);
                 this.message += `${this.lastSpace}. ${player.name} bounces! ${player.name} returns to ${rollback}`
                 if (prev < rollback) player.previousSpaces.unshift(prev);
                 player.currentSpace = rollback;
@@ -106,9 +105,9 @@ class GooseGame {
         console.group('list of all available methods');
         console.log('game.addPlayer(playerName)')
         console.log('game.move(player, dice1, dice2)')
-        console.groupEnd('list of all available methods');
+        console.groupEnd();
     }
 
 }
-
+//@ts-ignore
 window.game = new GooseGame();
